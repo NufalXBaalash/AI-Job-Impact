@@ -7,7 +7,8 @@ A production-grade data engineering pipeline that analyzes the impact of AI on e
 ## Images:
 
 ### DAG Process "Success" in Airflow
-<img width="1652" height="1072" alt="image" src="https://github.com/user-attachments/assets/db42e86d-fe7b-4877-acb8-80f8171d06de" />
+<img width="1650" height="1069" alt="image" src="https://github.com/user-attachments/assets/6875617f-8912-45df-a74b-73c92f76f78e" />
+
 
 ### Snowflake warehouse
 <img width="1649" height="1077" alt="image" src="https://github.com/user-attachments/assets/6f0068ca-3a7f-4f4c-b1e4-fa3dd2d35bd4" />
