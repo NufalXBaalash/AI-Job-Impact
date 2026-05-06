@@ -43,29 +43,67 @@ Raw CSV → HDFS → Spark ETL → Local DWH (Parquet) → Snowflake
 ```
 
 ---
+## Architecture
 
-## ⭐ Data Warehouse — Star Schema
+```mermaid
+flowchart TD
+    A["Raw CSV file\nai_job_impact.csv"]
+    B["HDFS\nDistributed storage"]
+    C["Apache Spark ETL\nClean · Engineer · Schema"]
+    D["Local Data Warehouse\nParquet files"]
+    E1["dim_employee"]
+    E2["dim_job"]
+    E3["dim_ai"]
+    E4["fact_table"]
+    F["Snowflake\nAI_JOB_DWH.STAR_SCHEMA"]
+    G["Apache Airflow\nDAG · Daily 06:00"]
 
+    A -->|upload| B
+    B -->|read| C
+    C -->|write parquet| D
+    D --> E1 & E2 & E3 & E4
+    E1 & E2 & E3 & E4 -->|load| F
+    G -.->|orchestrates| C
 ```
-                  ┌─────────────┐
-                  │ dim_employee│
-                  │─────────────│
-                  │ EMPLOYEE_ID │◄─┐
-                  │ AGE         │  │
-                  │ GENDER      │  │
-                  │ EDUCATION   │  │
-                  └─────────────┘  │
-                                   │
-┌─────────────┐   ┌─────────────┐  │   ┌─────────────┐
-│   dim_job   │   │ fact_table  │  │   │   dim_ai    │
-│─────────────│   │─────────────│  │   │─────────────│
-│ JOB_ROLE   │◄──│ EMPLOYEE_ID │──┘   │ AI_ADOPTION │
-│ INDUSTRY   │   │ JOB_ROLE   │──────►│ AUTOMATION  │
-│ YEARS_EXP  │   │ JOB_STATUS  │      │ UPSKILLING  │
-└─────────────┘   │ SALARY_*    │      └─────────────┘
-                  │ PRODUCTIVITY│
-                  └─────────────┘
+
+## DWH Star Schema
+
+```mermaid
+erDiagram
+    FACT_TABLE {
+        varchar EMPLOYEE_ID FK
+        varchar JOB_ROLE FK
+        varchar AI_ADOPTION_LEVEL FK
+        varchar JOB_STATUS
+        float SALARY_BEFORE_AI
+        float SALARY_AFTER_AI
+        float SALARY_CHANGE
+        float SALARY_CHANGE_PERCENT
+        float PRODUCTIVITY_CHANGE
+        float WORK_HOURS_PER_WEEK
+    }
+    DIM_EMPLOYEE {
+        varchar EMPLOYEE_ID PK
+        int AGE
+        varchar GENDER
+        varchar EDUCATION_LEVEL
+    }
+    DIM_JOB {
+        varchar JOB_ROLE PK
+        varchar INDUSTRY
+        int YEARS_EXPERIENCE
+    }
+    DIM_AI {
+        varchar AI_ADOPTION_LEVEL PK
+        varchar AUTOMATION_RISK
+        varchar UPSKILLING_REQUIRED
+    }
+
+    DIM_EMPLOYEE ||--o{ FACT_TABLE : "has"
+    DIM_JOB      ||--o{ FACT_TABLE : "has"
+    DIM_AI       ||--o{ FACT_TABLE : "has"
 ```
+
 
 | Table | Rows | Description |
 |-------|------|-------------|
