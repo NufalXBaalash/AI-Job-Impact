@@ -1,10 +1,19 @@
-# 🤖 AI Job Impact — Big Data Pipeline
+# AI Job Impact — Big Data Pipeline
 
 A production-grade data engineering pipeline that analyzes the impact of AI on employment using **Hadoop**, **Spark**, **Airflow**, and **Snowflake**.
 
 ---
 
-## 🏗️ Architecture
+## Images:
+
+### DAG Process "Success" in Airflow
+<img width="1652" height="1072" alt="image" src="https://github.com/user-attachments/assets/db42e86d-fe7b-4877-acb8-80f8171d06de" />
+
+### Snowflake warehouse
+<img width="1649" height="1077" alt="image" src="https://github.com/user-attachments/assets/6f0068ca-3a7f-4f4c-b1e4-fa3dd2d35bd4" />
+
+---
+## Architecture
 
 ```
 Raw CSV → HDFS → Spark ETL → Local DWH (Parquet) → Snowflake
@@ -21,7 +30,7 @@ Raw CSV → HDFS → Spark ETL → Local DWH (Parquet) → Snowflake
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 ├── dags/
@@ -103,7 +112,9 @@ erDiagram
     DIM_JOB      ||--o{ FACT_TABLE : "has"
     DIM_AI       ||--o{ FACT_TABLE : "has"
 ```
+---
 
+### Data Tabels
 
 | Table | Rows | Description |
 |-------|------|-------------|
@@ -114,7 +125,7 @@ erDiagram
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Start the stack
 
@@ -148,7 +159,7 @@ Enable the DAG `ai_job_impact_etl` and trigger a run.
 
 ---
 
-## 🔄 Airflow DAG
+## Airflow DAG
 
 **DAG ID:** `ai_job_impact_etl`  
 **Schedule:** Daily at 06:00 AM
@@ -166,7 +177,7 @@ health_check → run_spark_etl → validate_output → notify_done
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 | Tool | Version | Purpose |
 |------|---------|---------|
@@ -179,7 +190,7 @@ health_check → run_spark_etl → validate_output → notify_done
 
 ---
 
-## 📊 ETL Pipeline Steps
+## ETL Pipeline Steps
 
 1. **Ingest** — Read raw CSV from HDFS
 2. **Clean** — Drop duplicates, fill nulls
@@ -191,7 +202,7 @@ health_check → run_spark_etl → validate_output → notify_done
 
 ---
 
-## ✅ Validation Output
+## Validation Output
 
 ```
 +----------+-----+
@@ -205,7 +216,7 @@ health_check → run_spark_etl → validate_output → notify_done
 
 ---
 
-## 👤 Author
+## Author
 
 **Ahmed Baalash**  
 Data Engineering Project — Big Data Track
