@@ -13,7 +13,7 @@ def main():
         .config("spark.sql.shuffle.partitions", "4") \
         .getOrCreate()
 
-    print("✅ Spark Session Started")
+    print("-> Spark Session Started")
 
     # ==============================
     # 2. Read Data from HDFS
@@ -24,7 +24,7 @@ def main():
         inferSchema=True
     )
 
-    print("✅ Data Loaded")
+    print("-> Data Loaded")
 
     # ==============================
     # 3. Data Cleaning
@@ -36,7 +36,7 @@ def main():
         "Productivity_Change_%": 0
     })
 
-    print("✅ Data Cleaned")
+    print("Data Cleaned")
 
     # ==============================
     # 4. Feature Engineering
@@ -51,7 +51,7 @@ def main():
         (col("Salary_Change") / col("Salary_Before_AI")) * 100
     )
 
-    print("✅ Features Created")
+    print("-> Features Created")
 
     # ==============================
     # 5. Optimize Partitions (Important)
@@ -62,7 +62,7 @@ def main():
     # 6. Star Schema
     # ==============================
 
-    # 🎯 Dimension: Employee
+    # Dimension: Employee
     dim_employee = df.select(
         "Employee_ID",
         "Age",
@@ -70,21 +70,21 @@ def main():
         "Education_Level"
     ).dropDuplicates()
 
-    # 🎯 Dimension: Job
+    # Dimension: Job
     dim_job = df.select(
         "Job_Role",
         "Industry",
         "Years_Experience"
     ).dropDuplicates()
 
-    # 🎯 Dimension: AI
+    # Dimension: AI
     dim_ai = df.select(
         "AI_Adoption_Level",
         "Automation_Risk",
         "Upskilling_Required"
     ).dropDuplicates()
 
-    # 🎯 Fact Table
+    # Fact Table
     fact_table = df.select(
         "Employee_ID",
         "Job_Role",
@@ -98,7 +98,7 @@ def main():
         "Work_Hours_Per_Week"
     )
 
-    print("✅ Star Schema Created")
+    print("-> Star Schema Created")
 
     # ==============================
     # 7. Write to Data Warehouse (Parquet)
@@ -107,21 +107,21 @@ def main():
     base_path = "data/warehouse/"
 
     dim_employee.coalesce(1).write.mode("overwrite").parquet(base_path + "dim_employee")
-    print("✅ dim_employee saved")
+    print("-> dim_employee saved")
 
     dim_job.coalesce(1).write.mode("overwrite").parquet(base_path + "dim_job")
-    print("✅ dim_job saved")
+    print("-> dim_job saved")
 
     dim_ai.coalesce(1).write.mode("overwrite").parquet(base_path + "dim_ai")
-    print("✅ dim_ai saved")
+    print("-> dim_ai saved")
 
     fact_table.coalesce(1).write.mode("overwrite").parquet(base_path + "fact_table")
-    print("✅ fact_table saved")
+    print("-> fact_table saved")
 
     # ==============================
     # 8. Validation
     # ==============================
-    print("📊 Validation:")
+    print("Validation:")
     fact_table.groupBy("Job_Status").count().show()
 
     print("🎉 ETL Job Completed Successfully")
