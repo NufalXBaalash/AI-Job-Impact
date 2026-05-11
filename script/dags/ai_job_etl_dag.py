@@ -36,12 +36,12 @@ with DAG(
     health_check = BashOperator(
         task_id="health_check",
         bash_command="""
-            echo "🔍 Checking environment..."
-            which spark-submit || (echo "❌ spark-submit not found!" && exit 1)
-            echo "✅ spark-submit found"
-            ls /root/work/data/raw/ai_job_impact.csv || (echo "❌ Data file not found!" && exit 1)
-            echo "✅ Data file exists"
-            echo "✅ Health Check Passed"
+            echo "Checking environment..."
+            which spark-submit || (echo "spark-submit not found!" && exit 1)
+            echo "spark-submit found"
+            ls /root/work/data/raw/ai_job_impact.csv || (echo "Data file not found!" && exit 1)
+            echo "Data file exists"
+            echo "Health Check Passed"
         """,
     )
 
@@ -51,13 +51,13 @@ with DAG(
     run_etl = BashOperator(
         task_id="run_spark_etl",
         bash_command="""
-            echo "🚀 Starting Spark ETL..."
+            echo "Starting Spark ETL..."
             spark-submit \
                 --master local[*] \
                 --driver-memory 2g \
                 --conf spark.sql.shuffle.partitions=4 \
                 /root/work/ai_job.py
-            echo "✅ Spark ETL Completed"
+            echo "Spark ETL Completed"
         """,
         execution_timeout=timedelta(minutes=30),
     )
@@ -78,12 +78,12 @@ with DAG(
             else:
                 files = os.listdir(table_path)
                 parquet_files = [f for f in files if f.endswith(".parquet")]
-                print(f"✅ {table}: {len(parquet_files)} parquet file(s) found")
+                print(f"{table}: {len(parquet_files)} parquet file(s) found")
         
         if missing:
-            raise ValueError(f"❌ Missing tables: {missing}")
+            raise ValueError(f"Missing tables: {missing}")
         
-        print("🎉 All warehouse tables validated successfully!")
+        print("All warehouse tables validated successfully!")
 
     validate_output = PythonOperator(
         task_id="validate_output",
@@ -97,9 +97,9 @@ with DAG(
         task_id="notify_done",
         bash_command="""
             echo "========================================="
-            echo "🎉 ETL Pipeline Completed Successfully!"
-            echo "📅 Date: $(date)"
-            echo "📦 Tables:"
+            echo "ETL Pipeline Completed Successfully!"
+            echo "Date: $(date)"
+            echo "Tables:"
             ls /root/work/data/warehouse/
             echo "========================================="
         """,
